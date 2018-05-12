@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  web:
+    build: ./docker/
+    container_name: web
+    restart: always
+    tty: true
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/./microapp
+
