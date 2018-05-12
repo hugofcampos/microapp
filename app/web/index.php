@@ -43,9 +43,14 @@ $app->get('/answers', function () use ($app) {
     $answers = $app['db']->fetchAll($sql);
 
     foreach ($answers as &$answer) {
-        $client = new GuzzleHttp\Client();
-        $question = $client->request('GET', 'http://private-28a8e2-pools13.apiary-mock.com/questions/1');
-        $answer['question'] = json_decode($question->getBody());
+        $answer['question'] = [
+            'id' => (int) $answer['question'],
+            'links' => [
+                'href' => sprintf('http://private-28a8e2-pools13.apiary-mock.com/questions/%s', $answer['question']),
+                'rel' => 'self',
+                'type' => 'GET'
+            ],
+        ];
     }
 
     return $app->json($answers);
