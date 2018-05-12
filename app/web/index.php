@@ -38,4 +38,17 @@ $app->post('/answers', function (Request $request) use ($app) {
     return new JsonResponse(['id' => (int) $app['db']->lastInsertId()], 201);
 });
 
+$app->get('/answers', function () use ($app) {
+    $sql = "select * from answers";
+    $answers = $app['db']->fetchAll($sql);
+
+    foreach ($answers as &$answer) {
+        $client = new GuzzleHttp\Client();
+        $question = $client->request('GET', 'http://private-28a8e2-pools13.apiary-mock.com/questions/1');
+        $answer['question'] = json_decode($question->getBody());
+    }
+
+    return $app->json($answers);
+});
+
 $app->run();
